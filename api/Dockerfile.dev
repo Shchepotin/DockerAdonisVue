@@ -1,0 +1,13 @@
+FROM node:8.11.4
+
+RUN npm i -g @adonisjs/cli
+
+WORKDIR /usr/src/app
+
+ENV HOST=${HOST}
+ENV PORT=${PORT}
+
+COPY ./startup.dev.sh /opt/startup.dev.sh
+CMD ["/bin/bash", "/opt/startup.dev.sh"]
+
+EXPOSE ${PORT}

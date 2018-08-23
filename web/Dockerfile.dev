@@ -1,0 +1,11 @@
+FROM node:8.11.4
+
+WORKDIR /usr/src/app
+
+ENV HOST=${HOST}
+ENV PORT=${POST}
+
+COPY ./startup.dev.sh /opt/startup.dev.sh
+CMD ["/bin/bash", "/opt/startup.dev.sh"]
+
+EXPOSE ${HOST}

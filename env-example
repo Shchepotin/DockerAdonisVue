@@ -1,0 +1,15 @@
+### Project
+PROJECT_NAME=project_name
+TZ=UTC
+
+### API
+API_HOST=0.0.0.0
+API_PORT=2052
+
+### WEB
+WEB_HOST=0.0.0.0
+WEB_PORT=80
+WEB_SSL_PORT=443
+
+### MySQL
+MYSQL_ROOT_PASSWORD=secret

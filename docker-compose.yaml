@@ -1,0 +1,79 @@
+version: "3"
+
+### Networks Setup ############################################
+networks:
+  frontend:
+    driver: "bridge"
+  backend:
+    driver: "bridge"
+
+volumes:
+  mysql:
+    driver: "local"
+  phpmyadmin:
+    driver: "local"
+
+services:
+
+### Web #######################################################
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./web/src:/usr/src/app
+    environment:
+      - HOST=${WEB_HOST}
+      - PORT=${WEB_PORT}
+    ports:
+      - "${WEB_PORT}:${WEB_PORT}"
+    networks:
+      - frontend
+      - backend
+
+### Api #######################################################
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./api/src:/usr/src/app
+    environment:
+      - HOST=${API_HOST}
+      - PORT=${API_PORT}
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    depends_on:
+      - mysql
+    networks:
+      - frontend
+      - backend
+
+### MySQL ####################################################
+  mysql:
+    build:
+      context: ./mysql
+    volumes:
+      - ./.data/mysql:/var/lib/mysql
+      - ./mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - TZ=${TZ}
+    ports:
+      - "3306:3306"
+    networks:
+      - backend
+
+### PhpMyAdmin ###############################################
+  phpmyadmin:
+    build:
+      context: ./phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+    ports:
+      - "8880:80"
+    depends_on:
+      - mysql
+    networks:
+      - frontend
+      - backend
